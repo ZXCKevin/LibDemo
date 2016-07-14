@@ -1,13 +1,15 @@
 package com.beyond.shi.base_lib.utils;
 
 import android.content.Context;
+import android.net.Uri;
 import android.widget.ImageView;
 
 import com.beyond.shi.base_lib.utils.transformation.CropCircleTransformation;
 import com.beyond.shi.base_lib.utils.transformation.CropSquareTransformation;
 import com.beyond.shi.base_lib.utils.transformation.RoundedCornersTransformation;
+import com.beyond.shi.base_lib.utils.transformation.RoundedTransformationBuilder;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.RequestCreator;
+import com.squareup.picasso.Transformation;
 
 import java.io.File;
 
@@ -15,12 +17,6 @@ import java.io.File;
  * Created by wangjinya on 2016/7/13.
  */
 public class BitmapUtils {
-    //圆形图片
-    public static final int CIRCLE_IMAGE_MODE = 1;
-    //正方形
-    public static final int SQUARE_IMAGE_MODE = 2;
-
-
     /**
      * 加载网络图片
      *
@@ -42,32 +38,43 @@ public class BitmapUtils {
     }
 
     /**
-     * 加载圆形图片或者方形图片（根据长宽最小的为边宽）
+     * 加载圆形图片
      *
      * @param context
      * @param imageView
      * @param url
-     * @param IMAGE_MODE        有两种类型（圆形 CIRCLE_IMAGE_MODE和正方形 SQUARE_IMAGE_MODE)
      * @param erroResourceId
      * @param loadingResourceId
      */
-    public static void initImage(Context context, ImageView imageView,
-                                 String url, int IMAGE_MODE, int erroResourceId,
-                                 int loadingResourceId) {
-        RequestCreator placeholder = Picasso.with(context)
+    public static void initCircleImage(Context context, ImageView imageView,
+                                       String url, int erroResourceId,
+                                       int loadingResourceId) {
+        Picasso.with(context)
                 .load(url)
-                .noFade()
                 .error(erroResourceId)
-                .placeholder(loadingResourceId);
-        switch (IMAGE_MODE) {
-            case BitmapUtils.CIRCLE_IMAGE_MODE:
-                placeholder.transform(new CropCircleTransformation());
-                break;
-            case BitmapUtils.SQUARE_IMAGE_MODE:
-                placeholder.transform(new CropSquareTransformation());
-                break;
-        }
-        placeholder.into(imageView);
+                .placeholder(loadingResourceId)
+                .transform(new CropCircleTransformation())
+                .into(imageView);
+    }
+
+    /**
+     * 加载方形的图片，以最短宽度为边长
+     *
+     * @param context
+     * @param imageView
+     * @param url
+     * @param erroResourceId
+     * @param loadingResourceId
+     */
+    public static void initSquareImageView(Context context, ImageView imageView,
+                                           String url, int erroResourceId,
+                                           int loadingResourceId) {
+        Picasso.with(context)
+                .load(url)
+                .error(erroResourceId)
+                .placeholder(loadingResourceId)
+                .transform(new CropSquareTransformation())
+                .into(imageView);
     }
 
     /**
@@ -90,6 +97,69 @@ public class BitmapUtils {
                 .noFade()
                 .placeholder(loadingResourceId)
                 .transform(new RoundedCornersTransformation(radus, margin))
+                .into(imageView);
+    }
+
+    /**
+     * 带描边的圆角矩形图片
+     *
+     * @param context
+     * @param imageView
+     * @param url
+     * @param borderWidth
+     * @param borderColor
+     * @param radiu
+     * @param erroResourceId
+     * @param loadingResourceId
+     */
+    public static void initRoundedCornerImage(Context context, ImageView imageView,
+                                              String url, float borderWidth, int borderColor
+            , float radiu, int erroResourceId,
+
+                                              int loadingResourceId) {
+        Transformation transformation = new RoundedTransformationBuilder()
+                .borderColor(borderColor)
+                .borderWidthDp(borderWidth)
+                .cornerRadiusDp(radiu)
+                .build();
+        Picasso.with(context)
+                .load(url)
+                .error(erroResourceId)
+                .noFade()
+                .placeholder(loadingResourceId)
+                .transform(transformation)
+                .into(imageView);
+    }
+
+    /**
+     * 带描边的椭圆形的图片
+     *
+     * @param context
+     * @param imageView
+     * @param url
+     * @param borderWidth
+     * @param borderColor
+     * @param radiu
+     * @param erroResourceId
+     * @param loadingResourceId
+     */
+    public static void initOvalCornerImage(Context context, ImageView imageView,
+                                           String url, float borderWidth, int borderColor
+            , float radiu, int erroResourceId,
+
+                                           int loadingResourceId) {
+        Transformation transformation = new RoundedTransformationBuilder()
+                .borderColor(borderColor)
+                .borderWidthDp(borderWidth)
+                .cornerRadiusDp(radiu)
+                .oval(true)
+                .build();
+        Picasso.with(context)
+                .load(url)
+                .error(erroResourceId)
+                .noFade()
+                .placeholder(loadingResourceId)
+                .transform(transformation)
                 .into(imageView);
     }
 
@@ -123,6 +193,24 @@ public class BitmapUtils {
                           int loadingResourceId) {
         Picasso.with(context)
                 .load(resourceId)
+                .error(erroResourceId)
+                .placeholder(loadingResourceId)
+                .into(imageView);
+    }
+
+    /**
+     * 加载由Uri指定的图片
+     * @param context
+     * @param imageView
+     * @param uri
+     * @param erroResourceId
+     * @param loadingResourceId
+     */
+    public void initImageView(Context context, ImageView imageView, Uri uri
+            , int erroResourceId,
+                              int loadingResourceId) {
+        Picasso.with(context)
+                .load(uri)
                 .error(erroResourceId)
                 .placeholder(loadingResourceId)
                 .into(imageView);

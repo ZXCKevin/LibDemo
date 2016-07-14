@@ -11,12 +11,14 @@ import com.beyond.shi.base_lib.utils.callback.DownFileCallBack;
 import com.beyond.shi.base_lib.utils.callback.FileCallback;
 import com.beyond.shi.base_lib.utils.callback.GetStringCallBack;
 import com.beyond.shi.base_lib.utils.callback.LoadImageCallBack;
+import com.beyond.shi.base_lib.utils.callback.PostFileCallBack;
 import com.beyond.shi.base_lib.utils.callback.PostStringCallBack;
 import com.beyond.shi.base_lib.utils.callback.StringCallback;
 import com.beyond.shi.base_lib.utils.request.BaseRequest;
 import com.google.gson.Gson;
 
 import java.io.File;
+import java.util.List;
 import java.util.Map;
 
 import okhttp3.Call;
@@ -41,7 +43,7 @@ public class HttpUtils {
     }
 
     /**
-     * 初始化HttpUtils
+     * 需要在Application中，初始化HttpUtils
      *
      * @param application
      */
@@ -98,12 +100,12 @@ public class HttpUtils {
                 .execute(new StringCallback() {
                     @Override
                     public void onError(boolean isFromCache, Call call, @Nullable Response response, @Nullable Exception e) {
-
+                        postStringCallBack.postStringFail(isFromCache, call, response, e);
                     }
 
                     @Override
                     public void onResponse(boolean isFromCache, String s, Request request, @Nullable Response response) {
-
+                        postStringCallBack.postStringResponse(isFromCache, s, request, response);
                     }
                 });
     }
@@ -142,7 +144,7 @@ public class HttpUtils {
     }
 
     /**
-     * 像服务器发送一个字符串
+     * 向服务器发送一个字符串
      *
      * @param context
      * @param text
@@ -215,11 +217,58 @@ public class HttpUtils {
                 .execute(new BitmapCallback() {
                     @Override
                     public void onError(boolean isFromCache, Call call, @Nullable Response response, @Nullable Exception e) {
-
+                        loadImageCallBack.loadImageFail(isFromCache, call, response, e);
                     }
 
                     @Override
                     public void onResponse(boolean isFromCache, Bitmap bitmap, Request request, @Nullable Response response) {
+                        loadImageCallBack.loadImage(isFromCache, bitmap, request, response);
+                    }
+                });
+    }
+
+    /**
+     * 上传单个文件
+     *
+     * @param context
+     * @param url
+     * @param file
+     */
+    public void formUpload(Context context, String url, final File file, final PostFileCallBack postFileCallBack) {
+        //拼接参数
+        OkHttpUtils.post(url)//
+                .tag(context)//
+                .headers("header1", "headerValue1")//
+                .headers("header2", "headerValue2")//
+                .params("param1", "paramValue1")//
+                .params("param2", "paramValue2")//
+                .params("file1", file)   //这种方式为一个key，对应一个文件
+                .execute(new StringCallback() {
+                    @Override
+                    public void onResponse(boolean isFromCache, String s, Request request, @Nullable Response response) {
+
+                    }
+                });
+    }
+
+    /**
+     * 上传多个文件
+     *
+     * @param context
+     * @param url
+     */
+    public void formUpload(Context context, String url, List<File> files, final PostFileCallBack postFileCallBack) {
+        //拼接参数
+        OkHttpUtils.post(url)//
+                .tag(context)//
+                .headers("header1", "headerValue1")//
+                .headers("header2", "headerValue2")//
+                .params("param1", "paramValue1")//
+                .params("param2", "paramValue2")//
+                .addFileParams("file", files) //同一个key上传多个文件，上传多个文件
+                .execute(new StringCallback() {
+                    @Override
+                    public void onResponse(boolean isFromCache, String s, Request request, @Nullable Response response) {
 
                     }
                 });

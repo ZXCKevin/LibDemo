@@ -15,7 +15,8 @@
             <TextView
                 android:id="@+id/tv"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:maxLength="500"/>
 
             <ImageView
                 android:id="@+id/iv1"
@@ -36,6 +37,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/iv4"/>
+            <ImageView
+                android:layout_width="400px"
+                android:layout_height="400px"
+                android:id="@+id/iv5"/>
         </LinearLayout>
 
     </ScrollView>

@@ -11,6 +11,6 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        HttpUtils.getInstance().initHttpUtils(this,1024*1024*100);
+        HttpUtils.getInstance().initHttpUtils(this);
     }
 }
