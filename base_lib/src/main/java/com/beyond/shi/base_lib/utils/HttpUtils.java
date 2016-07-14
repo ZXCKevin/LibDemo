@@ -8,12 +8,12 @@ import android.support.annotation.Nullable;
 import com.beyond.shi.base_lib.utils.cache.CacheMode;
 import com.beyond.shi.base_lib.utils.callback.BitmapCallback;
 import com.beyond.shi.base_lib.utils.callback.DownFileCallBack;
-import com.beyond.shi.base_lib.utils.callback.GetEntryCallBack;
+import com.beyond.shi.base_lib.utils.callback.FileCallback;
 import com.beyond.shi.base_lib.utils.callback.GetStringCallBack;
 import com.beyond.shi.base_lib.utils.callback.LoadImageCallBack;
-import com.beyond.shi.base_lib.utils.callback.PostFileCallBack;
 import com.beyond.shi.base_lib.utils.callback.PostStringCallBack;
 import com.beyond.shi.base_lib.utils.callback.StringCallback;
+import com.beyond.shi.base_lib.utils.request.BaseRequest;
 import com.google.gson.Gson;
 
 import java.io.File;
@@ -60,6 +60,9 @@ public class HttpUtils {
         OkHttpUtils.get(url)
                 .tag(context)
                 .cacheMode(CacheMode.IF_NONE_CACHE_REQUEST)
+                .headers("Connection", "close")           //如果对于部分自签名的https访问不成功，需要加上该控制头
+                .headers("header1", "headerValue1")//
+                .params("param1", "paramValue1")//
                 .execute(new StringCallback() {
                     @Override
                     public void onError(boolean isFromCache, Call call, @Nullable Response response, @Nullable Exception e) {
@@ -87,7 +90,11 @@ public class HttpUtils {
                 .post(url)
                 .postJson(bodyJson)
                 .mediaType(MediaType.parse("application/json; charset=utf-8"))
+                .headers("Connection", "close")           //如果对于部分自签名的https访问不成功，需要加上该控制头
+                .headers("header1", "headerValue1")//
+                .params("param1", "paramValue1")//
                 .tag(context)
+                .cacheMode(CacheMode.IF_NONE_CACHE_REQUEST)
                 .execute(new StringCallback() {
                     @Override
                     public void onError(boolean isFromCache, Call call, @Nullable Response response, @Nullable Exception e) {
@@ -116,6 +123,9 @@ public class HttpUtils {
                     .post(url)
                     .postJson(bodyJson)
                     .mediaType(MediaType.parse("application/json; charset=utf-8"))
+                    .headers("Connection", "close")           //如果对于部分自签名的https访问不成功，需要加上该控制头
+                    .headers("header1", "headerValue1")//
+                    .params("param1", "paramValue1")//
                     .tag(context)
                     .execute(new StringCallback() {
                         @Override
@@ -132,73 +142,28 @@ public class HttpUtils {
     }
 
     /**
-     * 将文件作为请求体，发送到服务器
+     * 像服务器发送一个字符串
      *
      * @param context
-     * @param file             File对象，上传文件的路径
-     * @param url              上传的网络地址
-     * @param postFileCallBack 接口回调
+     * @param text
+     * @param url
      */
-    public void postFileResponse(Context context, File file, String url, final PostFileCallBack postFileCallBack) {
-        if (!file.exists()) {
-            return;
-        }
-        OkHttpUtils
-                .post(url)
-                .
+    public void postFileResponse(Context context, String text, String url, final GetStringCallBack getStringCallBack) {
+        OkHttpUtils.post(url)
                 .tag(context)
-                .build()
+                .postString(text)
                 .execute(new StringCallback() {
                     @Override
-                    public void onError(Call call, Exception e, int id) {
-
+                    public void onError(boolean isFromCache, Call call, @Nullable Response response, @Nullable Exception e) {
+                        getStringCallBack.getStringFail(isFromCache, call, response, e);
                     }
 
                     @Override
-                    public void inProgress(float progress, long total, int id) {
-                        postFileCallBack.postFileCurrent(progress, total);
-                    }
-
-                    @Override
-                    public void onResponse(String response, int id) {
-                        postFileCallBack.postFileResponse(response);
+                    public void onResponse(boolean isFromCache, String s, Request request, @Nullable Response response) {
+                        getStringCallBack.getStringResponse(isFromCache, s, request, response);
                     }
                 });
-    }
 
-
-    /**
-     * 根据自己的需求去自定义Callback，例如希望回调自己设置的对象
-     *
-     * @param context
-     * @param url              请求地址
-     * @param getEntryCallBack 回调接口
-     */
-    public void getEntryResponse(Context context, String url, final GetEntryCallBack getEntryCallBack) {
-        OkHttpUtils
-                .get()//
-                .url(url)//
-                .tag(context)
-                .build()//
-                .execute(new Callback<Object>() {
-                    @Override
-                    public Object parseNetworkResponse(Response response, int id) throws Exception {
-                        String string = response.body().string();
-                        Object obj = new Gson().fromJson(string, Object.class);
-                        return obj;
-                    }
-
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        getEntryCallBack.getEntryFail(call, e, id);
-                    }
-
-                    @Override
-                    public void onResponse(Object response, int id) {
-                        getEntryCallBack.getEntryResponse(response);
-                    }
-
-                });
     }
 
     /**
@@ -208,27 +173,35 @@ public class HttpUtils {
      * @param destFileName     下载文件的文件命名 如："gson-2.2.1.jar"
      * @param downFileCallBack
      */
-    public void downFileResponse(Context context, String url, String destFileDir, String destFileName
+    public void downFileResponse(Context context, String url, final String destFileDir, String destFileName
             , final DownFileCallBack downFileCallBack) {
-        OkHttpUtils//
-                .get()//
-                .url(url)//
-                .tag(context)
-                .build()//
-                .execute(new FileCallBack(destFileDir, destFileName) {
+        OkHttpUtils.get(url)//
+                .tag(this)//
+                .headers("header1", "headerValue1")//
+                .params("param1", "paramValue1")
+                .execute(new FileCallback(destFileDir, destFileName) {
                     @Override
-                    public void inProgress(float progress, long total, int id) {
-                        downFileCallBack.downCurrentProgress(progress, total);
+                    public void onBefore(BaseRequest request) {
+                        //开始下载
+                        downFileCallBack.startDown(request);
                     }
 
                     @Override
-                    public void onError(Call call, Exception e, int id) {
-                        downFileCallBack.downFileFail(call, e, id);
+                    public void onResponse(boolean isFromCache, File file, Request request, @Nullable Response response) {
+                        //下载完成
+                        downFileCallBack.downFile(isFromCache, file, request, response);
                     }
 
                     @Override
-                    public void onResponse(File response, int id) {
-                        downFileCallBack.downFile(response);
+                    public void downloadProgress(long currentSize, long totalSize, float progress, long networkSpeed) {
+                        //下载进度
+                        downFileCallBack.downCurrentProgress(currentSize, totalSize, progress, networkSpeed);
+                    }
+
+                    @Override
+                    public void onError(boolean isFromCache, Call call, @Nullable Response response, @Nullable Exception e) {
+                        //下载出错
+                        downFileCallBack.downFileFail(isFromCache, call, response, e);
                     }
                 });
     }
@@ -236,19 +209,18 @@ public class HttpUtils {
     //显示图片，可选该方法，也可用BitmapUtils中的来加载图片
     public void loadGetBitmapResponse(Context context, String url, final LoadImageCallBack loadImageCallBack) {
         OkHttpUtils
-                .get()//
-                .url(url)//
+                .get(url)//
                 .tag(context)
-                .build()//
+                .cacheMode(CacheMode.IF_NONE_CACHE_REQUEST)
                 .execute(new BitmapCallback() {
                     @Override
-                    public void onError(Call call, Exception e, int id) {
-                        loadImageCallBack.loadImageFail(call, e, id);
+                    public void onError(boolean isFromCache, Call call, @Nullable Response response, @Nullable Exception e) {
+
                     }
 
                     @Override
-                    public void onResponse(Bitmap response, int id) {
-                        loadImageCallBack.loadImage(response);
+                    public void onResponse(boolean isFromCache, Bitmap bitmap, Request request, @Nullable Response response) {
+
                     }
                 });
     }
