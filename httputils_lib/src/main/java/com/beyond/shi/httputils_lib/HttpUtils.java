@@ -11,12 +11,14 @@ import com.beyond.shi.httputils_lib.callback.FileCallBack;
 import com.beyond.shi.httputils_lib.callback.GetStringCallBack;
 import com.beyond.shi.httputils_lib.callback.LoadImageCallBack;
 import com.beyond.shi.httputils_lib.callback.StringCallback;
-import com.google.gson.Gson;
+
+import org.json.JSONObject;
 
 import java.io.File;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.Cache;
 import okhttp3.Call;
 import okhttp3.OkHttpClient;
 
@@ -41,11 +43,12 @@ public class HttpUtils {
      *
      * @param application
      */
-    public void initHttpUtils(Application application) {
-                OkHttpClient okHttpClient = new OkHttpClient.Builder()
+    public void initHttpUtils(Application application, int cache) {
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
 //                .addInterceptor(new LoggerInterceptor("TAG"))
                 .connectTimeout(10000L, TimeUnit.MILLISECONDS)
                 .readTimeout(10000L, TimeUnit.MILLISECONDS)
+                .cache(new Cache(application.getCacheDir(), cache))
                 //其他配置
                 .build();
 
@@ -62,6 +65,7 @@ public class HttpUtils {
     public void getStringResponse(Context context, String url, final GetStringCallBack getStringCallBack) {
         OkHttpUtils.get()
                 .tag(context)
+                .url(url)
                 .build()
                 .execute(new StringCallback() {
                     @Override
@@ -93,7 +97,7 @@ public class HttpUtils {
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        getStringCallBack.getStringFail(call,e,id);
+                        getStringCallBack.getStringFail(call, e, id);
                     }
 
                     @Override
@@ -113,7 +117,7 @@ public class HttpUtils {
      */
     public void postStringResponse(Context context, String url, Map<String, String> map, final GetStringCallBack getStringCallBack) {
         if (map != null) {
-            String bodyJson = new Gson().toJson(map);
+            String bodyJson = new JSONObject(map).toString();
             OkHttpUtils
                     .postString()
                     .url(url)
@@ -194,12 +198,13 @@ public class HttpUtils {
 
     /**
      * 将文件作为请求体，发送到服务器。
+     *
      * @param context
      * @param url
      * @param file
      * @param getStringCallBack
      */
-    public void postUpFileResponse(Context context, String url, File file, final GetStringCallBack getStringCallBack){
+    public void postUpFileResponse(Context context, String url, File file, final GetStringCallBack getStringCallBack) {
         OkHttpUtils
                 .postFile()
                 .tag(context)
@@ -209,17 +214,53 @@ public class HttpUtils {
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        getStringCallBack.getStringFail(call,e,id);
+                        getStringCallBack.getStringFail(call, e, id);
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
-                        getStringCallBack.getStringResponse(response,id);
+                        getStringCallBack.getStringResponse(response, id);
                     }
                 });
     }
 
-    public void cancelResponse(Context context){
+    /**
+     * 上传单个表单文件
+     *
+     * @param context
+     * @param nameKey
+     * @param fileName
+     * @param file
+     * @param params
+     */
+    public void postFormFileResponse(Context context,
+                                     String nameKey, String fileName, File file,
+                                     Map<String, String> params, Map<String, String> headers, final GetStringCallBack getStringCallBack) {
+        OkHttpUtils.post()
+                .tag(context)
+                .addFile(nameKey, fileName, file)
+                .params(params)
+                .headers(headers)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        getStringCallBack.getStringFail(call, e, id);
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        getStringCallBack.getStringResponse(response, id);
+                    }
+                });
+    }
+
+    /**
+     * 取消网络请求
+     *
+     * @param context
+     */
+    public void cancelResponse(Context context) {
         OkHttpUtils.getInstance().cancelTag(context);
     }
 }

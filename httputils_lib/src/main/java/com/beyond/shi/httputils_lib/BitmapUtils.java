@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.widget.ImageView;
 
+import com.beyond.shi.httputils_lib.transformation.BorderedCircleTransform;
 import com.beyond.shi.httputils_lib.transformation.CropCircleTransformation;
 import com.beyond.shi.httputils_lib.transformation.CropSquareTransformation;
 import com.beyond.shi.httputils_lib.transformation.RoundedCornersTransformation;
@@ -57,6 +58,27 @@ public class BitmapUtils {
                 .into(imageView);
     }
 
+    /**
+     * 带描边的圆形图片
+     * @param context
+     * @param imageView
+     * @param url
+     * @param erroResourceId
+     * @param loadingResourceId
+     * @param borderWith
+     * @param borderColor
+     */
+    public static void initCircleImage(Context context, ImageView imageView,
+                                       String url, int erroResourceId,
+                                       int loadingResourceId,int borderWith,int borderColor){
+        Picasso.with(context)
+                .load(url)
+                .placeholder(loadingResourceId)
+                .noFade()
+                .error(erroResourceId)
+                .transform(new BorderedCircleTransform(borderWith,borderColor))
+                .into(imageView);
+    }
     /**
      * 加载方形的图片，以最短宽度为边长
      *
@@ -193,6 +215,7 @@ public class BitmapUtils {
                           int loadingResourceId) {
         Picasso.with(context)
                 .load(resourceId)
+                .noFade()
                 .error(erroResourceId)
                 .placeholder(loadingResourceId)
                 .into(imageView);
@@ -211,6 +234,7 @@ public class BitmapUtils {
                               int loadingResourceId) {
         Picasso.with(context)
                 .load(uri)
+                .noFade()
                 .error(erroResourceId)
                 .placeholder(loadingResourceId)
                 .into(imageView);
