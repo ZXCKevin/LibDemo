@@ -2,21 +2,17 @@ package com.beyond.shi.customlib;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.beyond.shi.base_lib.utils.BitmapUtils;
-import com.beyond.shi.base_lib.utils.HttpUtils;
-import com.beyond.shi.base_lib.utils.callback.GetStringCallBack;
+import com.beyond.shi.httputils_lib.BitmapUtils;
+import com.beyond.shi.httputils_lib.HttpUtils;
+import com.beyond.shi.httputils_lib.callback.GetStringCallBack;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import okhttp3.Call;
-import okhttp3.Request;
-import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
     ImageView iv4;
     @Bind(R.id.iv5)
     ImageView iv5;
+    @Bind(R.id.btn_up)
+    Button btnUp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,22 +51,21 @@ public class MainActivity extends AppCompatActivity {
                 , R.mipmap.ic_launcher, R.mipmap.ic_launcher);
         BitmapUtils.initRoundedCornerImage(this, iv4, "https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=3466741137,3786670042&fm=21&gp=0.jpg"
                 , 10, 0, R.mipmap.ic_launcher, R.mipmap.ic_launcher);
-        BitmapUtils.initOvalCornerImage(this,iv5,"https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=3466741137,3786670042&fm=21&gp=0.jpg",
-                4, Color.RED,20,R.mipmap.ic_launcher,R.mipmap.ic_launcher);
+        BitmapUtils.initOvalCornerImage(this, iv5, "https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=3466741137,3786670042&fm=21&gp=0.jpg",
+                4, Color.RED, 20, R.mipmap.ic_launcher, R.mipmap.ic_launcher);
+
     }
 
     //通过get请求获取字符串
     private void initGetString() {
         HttpUtils.getInstance().getStringResponse(this, "http://www.baidu.com", new GetStringCallBack() {
             @Override
-            public void getStringResponse(boolean isFromCache, String s, Request request, @Nullable Response response) {
-                Log.i("=======",
-                        "isFromCache" + isFromCache + "s: " + s + "request:" + request + "request:" + request);
-                tv.setText(s);
+            public void getStringResponse(String response, int id) {
+                tv.setText(response);
             }
 
             @Override
-            public void getStringFail(boolean isFromCache, Call call, @Nullable Response response, @Nullable Exception e) {
+            public void getStringFail(Call call, Exception e, int id) {
 
             }
         });
@@ -77,6 +74,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        HttpUtils.getInstance().cancelHttpResponse(this);//取消加载网络请求
+        HttpUtils.getInstance().cancelResponse(this);
     }
 }
