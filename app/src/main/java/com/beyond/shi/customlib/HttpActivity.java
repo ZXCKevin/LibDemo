@@ -9,9 +9,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.beyond.shi.customlib.data.Bean;
 import com.beyond.shi.httputils_lib.HttpUtils;
-import com.beyond.shi.httputils_lib.callback.DownFileCallBack;
-import com.beyond.shi.httputils_lib.callback.GetStringCallBack;
+import com.beyond.shi.httputils_lib.callback.StringCallback;
+import com.beyond.shi.httputils_lib.callback.TCallBack;
 
 import java.io.File;
 
@@ -29,6 +30,8 @@ public class HttpActivity extends Activity {
     Button btnUp;
     @Bind(R.id.pb)
     ProgressBar pb;
+    @Bind(R.id.tv2)
+    TextView mTv2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,18 +43,30 @@ public class HttpActivity extends Activity {
 
     private void initHttps() {
         //请求示例
-        HttpUtils.getInstance().getStringResponse(this, "http://www.baidu.com", new GetStringCallBack() {
+        HttpUtils.getInstance().getStringResponse(this, "http://www.baidu.com", new StringCallback() {
             @Override
-            public void getStringResponse(String response, int id) {
+            public void onError(Call call, Exception e, int id) {
+                tv.setText(e.toString());//错误信息
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
                 tv.setText(response);
             }
-
-            @Override
-            public void getStringFail(Call call, Exception e, int id) {
-
-            }
         });
+    HttpUtils.getInstance().getStringResponse(this, "http://cn.bing.com/cnhp/coverstory/", new TCallBack<Bean>() {
+        @Override
+        public void onError(Call call, Exception e, int id) {
+            mTv2.setText(e.toString());//错误信息
+        }
 
+        @Override
+        public void onResponse(Bean response, int id) {
+            mTv2.setText("实体类示例Bean：："+response.toString());
+        }
+
+
+    });
         //下载示例：
         btnUp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,7 +76,7 @@ public class HttpActivity extends Activity {
                             @Override
                             public void inProgress(float progress, long total, int id) {
                                 btnUp.setClickable(false);//设置不可点击
-                                btnUp.setText("已下载"+(int) (progress * 100)+"%");
+                                btnUp.setText("已下载" + (int) (progress * 100) + "%");
                                 pb.setProgress((int) (progress * 100));
                             }
 

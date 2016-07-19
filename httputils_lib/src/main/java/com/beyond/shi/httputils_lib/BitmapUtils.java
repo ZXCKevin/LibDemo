@@ -93,6 +93,7 @@ public class BitmapUtils {
                                            int loadingResourceId) {
         Picasso.with(context)
                 .load(url)
+                .noFade()
                 .error(erroResourceId)
                 .placeholder(loadingResourceId)
                 .transform(new CropSquareTransformation())
@@ -168,7 +169,6 @@ public class BitmapUtils {
     public static void initOvalCornerImage(Context context, ImageView imageView,
                                            String url, float borderWidth, int borderColor
             , float radiu, int erroResourceId,
-
                                            int loadingResourceId) {
         Transformation transformation = new RoundedTransformationBuilder()
                 .borderColor(borderColor)
