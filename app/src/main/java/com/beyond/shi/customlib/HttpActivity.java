@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.beyond.shi.customlib.data.Bean;
 import com.beyond.shi.httputils_lib.HttpUtils;
+import com.beyond.shi.httputils_lib.callback.FileCallBack;
 import com.beyond.shi.httputils_lib.callback.StringCallback;
 import com.beyond.shi.httputils_lib.callback.TCallBack;
 
@@ -72,7 +73,7 @@ public class HttpActivity extends Activity {
             @Override
             public void onClick(View view) {
                 HttpUtils.getInstance().downFileResponse(HttpActivity.this, "http://gdown.baidu.com/data/wisegame/b84c9708a92327ed/jinritoutiao_570.apk", Environment.getExternalStorageDirectory().getAbsolutePath(), "jiritoutiao.apk"
-                        , new DownFileCallBack() {
+                        , new FileCallBack(Environment.getExternalStorageDirectory().getAbsolutePath(),"hello.apk") {
                             @Override
                             public void inProgress(float progress, long total, int id) {
                                 btnUp.setClickable(false);//设置不可点击
@@ -81,18 +82,19 @@ public class HttpActivity extends Activity {
                             }
 
                             @Override
-                            public void downFileErro(Call call, Exception e, int id) {
+                            public void onError(Call call, Exception e, int id) {
                                 Toast.makeText(HttpActivity.this, "下载失败", Toast.LENGTH_SHORT).show();
                                 btnUp.setClickable(true);//可点击
                                 btnUp.setText("重新下载");
                             }
 
                             @Override
-                            public void downFileSuccess(File response, int id) {
+                            public void onResponse(File response, int id) {
                                 Toast.makeText(HttpActivity.this, "下载成功", Toast.LENGTH_SHORT).show();
                                 btnUp.setText("下载完成");
                             }
-                        });
+                        }
+                );
             }
         });
     }
