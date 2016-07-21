@@ -2,7 +2,7 @@ package com.beyond.shi.customlib;
 
 import android.app.Application;
 
-import com.beyond.shi.base_lib.utils.HttpUtils;
+import com.beyond.shi.httputils_lib.HttpUtils;
 
 /**
  * Created by guojuan on 2016/7/13.
