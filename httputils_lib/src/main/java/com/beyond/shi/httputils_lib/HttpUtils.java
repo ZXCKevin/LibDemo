@@ -9,6 +9,9 @@ import com.beyond.shi.httputils_lib.callback.BitmapCallback;
 import com.beyond.shi.httputils_lib.callback.FileCallBack;
 import com.beyond.shi.httputils_lib.callback.StringCallback;
 import com.beyond.shi.httputils_lib.callback.TCallBack;
+import com.beyond.shi.httputils_lib.callback.TsCallBack;
+import com.beyond.shi.httputils_lib.cookie.CookieJarImpl;
+import com.beyond.shi.httputils_lib.cookie.store.PersistentCookieStore;
 import com.beyond.shi.httputils_lib.https.HttpsUtils;
 
 import org.json.JSONObject;
@@ -44,12 +47,20 @@ public class HttpUtils {
      */
     public void initHttpUtils(Application application, int cache) {
         HttpsUtils.SSLParams sslParams = HttpsUtils.getSslSocketFactory(null, null, null);
+        /**
+         * 目前项目中包含：
+         * PersistentCookieStore //持久化cookie
+         *SerializableHttpCookie //持久化cookie
+         *MemoryCookieStore //cookie信息存在内存中
+         */
+        CookieJarImpl cookieJar = new CookieJarImpl(new PersistentCookieStore(application));//持久化
 
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
 //                .addInterceptor(new LoggerInterceptor("TAG"))
                 .connectTimeout(10000L, TimeUnit.MILLISECONDS)
                 .readTimeout(10000L, TimeUnit.MILLISECONDS)
                 .cache(new Cache(application.getCacheDir(), cache))
+                .cookieJar(cookieJar)
                 .sslSocketFactory(sslParams.sSLSocketFactory, sslParams.trustManager)//支持所有的https://协议
                 //其他配置
                 .build();
@@ -86,7 +97,20 @@ public class HttpUtils {
                 .build()
                 .execute(callBack);
     }
-
+    /**返回一个List<T> 类型的数据 根据json字符串的类型来决定
+     * @Package com.beyond.shi.httputils_lib
+     * @Title
+     * @Description
+     * @author WangJinya
+     * @Time 2016/7/21 14:33
+     */
+    public void getStringResponse(Context context, String url, TsCallBack tsCallBack){
+        OkHttpUtils.get()
+                .tag(context)
+                .url(url)
+                .build()
+                .execute(tsCallBack);
+    }
     /**
      * post请求
      *
@@ -115,7 +139,16 @@ public class HttpUtils {
     public void postResponse(Context context, String url, Map<String, String> params, TCallBack callBack) {
         OkHttpUtils.post().url(url).params(params).build().execute(callBack);
     }
-
+    /**post请求得到一个List<T> 类型 根据json字符串的类型来决定；
+     * @Package com.beyond.shi.httputils_lib
+     * @Title
+     * @Description
+     * @author WangJinya
+     * @Time 2016/7/21 14:35
+     */
+    public void postResponse(Context context,String url,Map<String ,String > params,TsCallBack tsCallBack){
+        OkHttpUtils.post().url(url).params(params).build().execute(tsCallBack);
+    }
     /**
      * post请求，提交一个Gson字符串到服务器端
      *
@@ -156,13 +189,13 @@ public class HttpUtils {
 
     /**
      * @param context
-     * @param url              网址
-     * @param destFileDir      下载的路径 如：Environment.getExternalStorageDirectory().getAbsolutePath()
-     * @param destFileName     下载文件的文件命名 如："gson-2.2.1.jar"
+     * @param url          网址
+     * @param destFileDir  下载的路径 如：Environment.getExternalStorageDirectory().getAbsolutePath()
+     * @param destFileName 下载文件的文件命名 如："gson-2.2.1.jar"
      * @param callBack
      */
     public void downFileResponse(Context context, String url, final String destFileDir, String destFileName
-            ,FileCallBack callBack) {
+            , FileCallBack callBack) {
         OkHttpUtils//
                 .get()//
                 .tag(context)
@@ -255,7 +288,6 @@ public class HttpUtils {
                 .execute(callback);
     }
     //TODO HEAD、DELETE、PUT、PATCH 如需要这些中请求方式，可定义静态方法调用
-
     /**
      * 取消网络请求
      *
