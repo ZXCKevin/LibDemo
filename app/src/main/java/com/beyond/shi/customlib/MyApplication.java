@@ -4,7 +4,6 @@ import android.app.Application;
 
 import com.beyond.shi.httputils_lib.HttpUtils;
 
-
 /**
  * Created by wangjinya on 2016/7/13.
  */

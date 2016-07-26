@@ -1,1 +1,1 @@
-include ':app',':httputils_lib'
+include ':app', ':httputils_lib', ':baseuilib'
