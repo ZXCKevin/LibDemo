@@ -5,7 +5,7 @@
     <include android:id="@+id/layout_load" layout="@layout/layout_load"/>
     <include android:id="@+id/layout_empty" layout="@layout/layout_empty"/>
     <include android:id="@+id/layout_error" layout="@layout/layout_error"/>
-    <LinearLayout
+    <FrameLayout
         android:id="@+id/content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
