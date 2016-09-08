@@ -88,30 +88,35 @@ public class BaseLoadActivity extends BaseActivity{
                 mEmptyView.setVisibility(View.GONE);
                 mErrorView.setVisibility(View.GONE);
                 mLoadingView.setVisibility(View.VISIBLE);
+                mLoadControl.startAnim();
                 break;
             case EMPTY:
                 mContentView.setVisibility(View.GONE);
                 mEmptyView.setVisibility(View.VISIBLE);
                 mErrorView.setVisibility(View.GONE);
                 mLoadingView.setVisibility(View.GONE);
+                mLoadControl.stopAnim();
                 break;
             case ERROR:
                 mContentView.setVisibility(View.GONE);
                 mEmptyView.setVisibility(View.GONE);
                 mErrorView.setVisibility(View.VISIBLE);
                 mLoadingView.setVisibility(View.GONE);
+                mLoadControl.stopAnim();
                 break;
             case CONTENT:
                 mContentView.setVisibility(View.VISIBLE);
                 mEmptyView.setVisibility(View.GONE);
                 mErrorView.setVisibility(View.GONE);
                 mLoadingView.setVisibility(View.GONE);
+                mLoadControl.stopAnim();
                 break;
             default:
                 mContentView.setVisibility(View.VISIBLE);
                 mEmptyView.setVisibility(View.GONE);
                 mErrorView.setVisibility(View.GONE);
                 mLoadingView.setVisibility(View.GONE);
+                mLoadControl.stopAnim();
                 break;
         }
     }
