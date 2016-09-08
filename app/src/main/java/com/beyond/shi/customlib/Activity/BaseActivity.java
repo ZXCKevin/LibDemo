@@ -33,8 +33,7 @@ public abstract class BaseActivity extends AutoLayoutActivity implements View.On
     protected final String TAG = this.getClass().getSimpleName();
 
     protected EventBus mEventBus;
-/** View点击 **/
-    public abstract void widgetClick(View v);
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +65,8 @@ public abstract class BaseActivity extends AutoLayoutActivity implements View.On
     }
 
     /**
-     * 沉浸状态栏
+     *描述: 沉沁状态栏
+     *作者: Administrator on 2016/9/8 15:42
      */
     private void steepStatusBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -80,48 +80,53 @@ public abstract class BaseActivity extends AutoLayoutActivity implements View.On
     }
 
     /**
-     * 初始化参数
-     *
-     * @param parms
+     *描述: 初始化其它页面传过来的参数（若使用EventBus传递，此方法可不用）
+     *作者: Administrator on 2016/9/8 15:41
      */
     public  void initParms(Bundle parms){};
 
     /**
-     * 绑定视图
-     *
-     * @return
+     *描述: 绑定视图布局
+     *作者: Administrator on 2016/9/8 15:40
      */
-    public abstract View bindView();
+    public  View bindView(){return null;}
 
     /**
-     * 绑定布局
-     *
-     * @return
+     *描述: 绑定布局
+     *作者: Administrator on 2016/9/8 15:40
      */
     public abstract int bindLayout();
 
     /**
-     * 初始化控件
-     *
-     * @param view
+     *描述: 初始化控件
+     *作者: Administrator on 2016/9/8 15:39
      */
     public abstract void initView(final View view);
 
+    /** View点击 **/
+    public  void widgetClick(View v){};
+
     /**
-     * 绑定控件
-     *
-     * @param resId
-     *
-     * @return
+     *描述: 绑定控件
+     *作者: Administrator on 2016/9/8 15:39
      */
     protected    <T extends View> T bind(int resId) {
         return (T) super.findViewById(resId);
     }
 
     /**
-     * 设置监听
+     *描述: 绑定View内部控件
+     *作者: Administrator on 2016/9/8 15:37
      */
-    public abstract void setListener();
+    protected <T extends View> T bind(View v,int resId){
+        return (T) super.findViewById(resId);
+    }
+
+    /**
+     *描述: 设置监听
+     *作者: Administrator on 2016/9/8 15:39
+     */
+    public void setListener(){};
 
     @Override
     public void onClick(View v) {
@@ -129,28 +134,22 @@ public abstract class BaseActivity extends AutoLayoutActivity implements View.On
     }
 
     /**
-     * 业务操作
-     *
-     * @param mContext
+     *描述: 业务处理
+     *作者: Administrator on 2016/9/8 15:43
      */
-    public abstract void doBusiness(Context mContext);
-
-
+    public  void doBusiness(Context mContext){};
 
     /**
-     * 页面跳转
-     *
-     * @param clz
+     *描述: 页面跳转
+     *作者: Administrator on 2016/9/8 15:43
      */
     public void startActivity(Class<?> clz) {
         startActivity(new Intent(BaseActivity.this,clz));
     }
 
     /**
-     * 携带数据的页面跳转
-     *
-     * @param clz
-     * @param bundle
+     *描述: 携带数据跳转页面
+     *作者: Administrator on 2016/9/8 15:43
      */
     public void startActivity(Class<?> clz, Bundle bundle) {
         Intent intent = new Intent();

@@ -5,15 +5,18 @@
     android:orientation="vertical"
     android:gravity="center">
     <ImageView
+        android:id="@+id/iv_base_error"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@mipmap/ic_launcher"/>
     <TextView
+        android:id="@+id/tv_base_error_descirpe"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/activity_horizontal_margin"
         android:text="@string/cube_ptr_pull_down"/>
     <Button
+        android:id="@+id/btn_base_error_action"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/activity_horizontal_margin"
