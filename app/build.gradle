@@ -26,4 +26,5 @@ dependencies {
     compile project(':httputils_lib')
     compile project(':baseuilib')
     compile 'com.zhy:autolayout:1.4.3'
+    compile 'com.jakewharton:butterknife:7.0.1'
 }
