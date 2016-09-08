@@ -14,6 +14,8 @@ import android.widget.Toast;
 
 import com.zhy.autolayout.AutoLayoutActivity;
 
+import org.greenrobot.eventbus.EventBus;
+
 /**
  * Created by Administrator on 2016/7/21.
  */
@@ -30,7 +32,8 @@ public abstract class BaseActivity extends AutoLayoutActivity implements View.On
     /** 日志输出标志 **/
     protected final String TAG = this.getClass().getSimpleName();
 
-    /** View点击 **/
+    protected EventBus mEventBus;
+/** View点击 **/
     public abstract void widgetClick(View v);
 
     @Override
@@ -55,6 +58,8 @@ public abstract class BaseActivity extends AutoLayoutActivity implements View.On
         if (!isAllowScreenRoate) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
+        mEventBus = EventBus.getDefault();
+        EventBus.getDefault().register(this);//注册EventBus
         initView(mContextView);
         setListener();
         doBusiness(this);
@@ -79,7 +84,7 @@ public abstract class BaseActivity extends AutoLayoutActivity implements View.On
      *
      * @param parms
      */
-    public abstract void initParms(Bundle parms);
+    public  void initParms(Bundle parms){};
 
     /**
      * 绑定视图
@@ -109,7 +114,7 @@ public abstract class BaseActivity extends AutoLayoutActivity implements View.On
      *
      * @return
      */
-    protected    <T extends View> T $(int resId) {
+    protected    <T extends View> T bind(int resId) {
         return (T) super.findViewById(resId);
     }
 
@@ -156,7 +161,7 @@ public abstract class BaseActivity extends AutoLayoutActivity implements View.On
         startActivity(intent);
     }
 
-    /**
+    /*
      * 含有Bundle通过Class打开编辑界面
      *
      * @param cls
@@ -206,6 +211,7 @@ public abstract class BaseActivity extends AutoLayoutActivity implements View.On
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        EventBus.getDefault().unregister(this);
         Log.d(TAG, "onDestroy()");
     }
 
@@ -213,7 +219,7 @@ public abstract class BaseActivity extends AutoLayoutActivity implements View.On
      * 简化Toast
      * @param msg
      */
-    protected void showToast(String msg){
+    protected void showToast(String msg) {
         Toast.makeText(this,msg,Toast.LENGTH_SHORT).show();
     }
 
