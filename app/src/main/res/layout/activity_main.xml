@@ -11,10 +11,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/btn_http"
-        android:text="网络加载示例"/>
+        android:text="网络加载示例"
+        />
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/btn_image"
         android:text="图片加载示例"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_list_refresh"
+        android:text="listview下拉刷新和上拉加载"/>
 </LinearLayout>
