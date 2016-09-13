@@ -11,7 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/btn_http"
-        android:text="网络加载示例"/>
+        android:text="网络加载示例"
+        />
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

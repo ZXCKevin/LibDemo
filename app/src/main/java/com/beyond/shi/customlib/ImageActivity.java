@@ -39,17 +39,17 @@ public class ImageActivity extends Activity {
     //加载图片
     private void initImageLoad() {
         BitmapUtils.initImage(this, iv1, "https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=3197501779,1245095733&fm=21&gp=0.jpg"
-                , R.mipmap.ic_launcher, R.mipmap.ic_launcher);
+                , R.drawable.ic_launcher, R.drawable.ic_launcher);
         BitmapUtils.initCircleImage(this, iv2, "https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=3197501779,1245095733&fm=21&gp=0.jpg"
-                , R.mipmap.ic_launcher, R.mipmap.ic_launcher);
+                , R.drawable.ic_launcher, R.drawable.ic_launcher);
         BitmapUtils.initSquareImageView(this, iv3, "https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=1079107641,923986729&fm=21&gp=0.jpg"
-                , R.mipmap.ic_launcher, R.mipmap.ic_launcher);
+                , R.drawable.ic_launcher, R.drawable.ic_launcher);
         BitmapUtils.initRoundedCornerImage(this, iv4, "https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=3466741137,3786670042&fm=21&gp=0.jpg"
-                , 10, 0, R.mipmap.ic_launcher, R.mipmap.ic_launcher);
+                , 10, 0, R.drawable.ic_launcher, R.drawable.ic_launcher);
         BitmapUtils.initOvalCornerImage(this, iv5, "https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=3466741137,3786670042&fm=21&gp=0.jpg",
-                4, Color.RED, 20, R.mipmap.ic_launcher, R.mipmap.ic_launcher);
+                4, Color.RED, 20, R.drawable.ic_launcher, R.drawable.ic_launcher);
         BitmapUtils.initCircleImage(this,iv6,"https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=3466741137,3786670042&fm=21&gp=0.jpg"
-        ,R.mipmap.ic_launcher,R.mipmap.ic_launcher,5,Color.YELLOW);
+        ,R.drawable.ic_launcher,R.drawable.ic_launcher,5,Color.YELLOW);
     }
 
     @Override
