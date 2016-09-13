@@ -16,6 +16,8 @@ public class MainActivity extends AppCompatActivity {
     Button btnHttp;
     @Bind(R.id.btn_image)
     Button btnImage;
+    @Bind(R.id.btn_list_refresh)
+    Button btn_list_refresh;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
 //        initImageLoad();
     }
 
-    @OnClick({R.id.btn_http, R.id.btn_image})
+    @OnClick({R.id.btn_http, R.id.btn_image,R.id.btn_list_refresh})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_http:
@@ -34,6 +36,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.btn_image:
                 startActivity(new Intent(this,ImageActivity.class));
+                break;
+            case R.id.btn_list_refresh:
+                startActivity(new Intent(this,ListViewRefrshActivity.class));
                 break;
         }
     }
